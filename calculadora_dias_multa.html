@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Pena de Multa</title>
+    <style>
+        /* --- Variáveis de Tema --- */
+        :root {
+            --bg-page: #F2F2F2;
+            --surface: #FFFFFF;
+            --primary: #348E91;
+            --secondary: #1C5052;
+            --dark-green: #213635;
+            --text-main: #0A0C0D;
+            --text-muted: #546e7a;
+            --text-subtle: #7f8c8d;
+            --border-light: #e0e6e6;
+            --error-bg: #ffebee;
+            --error-text: #c62828;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-soft: 0 8px 24px rgba(28, 80, 82, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-page); color: var(--text-main); display: flex; justify-content: center; padding: 40px 20px; line-height: 1.5; }
+        .container { background-color: var(--surface); max-width: 800px; width: 100%; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); }
+
+        .header { text-align: center; margin-bottom: 35px; }
+        .header-emoji { font-size: 3.5rem; margin-bottom: 10px; display: inline-block; transition: transform 0.2s; }
+        .header-emoji:hover { transform: scale(1.1); }
+        .header h1 { color: var(--dark-green); font-size: 2rem; font-weight: 800; }
+        
+        .section-title { font-size: 1.15rem; color: var(--secondary); font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: ''; display: block; width: 4px; height: 20px; background-color: var(--primary); border-radius: 4px; }
+
+        .card { background: #fafcfc; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px; }
+
+        .info-panel { background: linear-gradient(135deg, rgba(52, 142, 145, 0.1) 0%, rgba(28, 80, 82, 0.05) 100%); border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        .info-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .info-value { font-size: 1.2rem; color: var(--dark-green); font-weight: 700; }
+        .info-fundamento { font-size: 1rem; color: var(--primary); font-style: italic; font-weight: 600; }
+
+        label { font-size: 0.95rem; font-weight: 600; color: var(--dark-green); display: block; }
+        .sub-label { font-size: 0.8rem; color: var(--text-subtle); display: block; margin-bottom: 12px; }
+
+        select, input[type="number"] { width: 100%; padding: 12px 16px; font-size: 1rem; color: var(--text-main); border: 2px solid var(--border-light); border-radius: 8px; outline: none; transition: 0.2s; }
+        select:focus, input[type="number"]:focus { border-color: var(--primary); }
+
+        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+        
+        .penas-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .pena-box {
+            background-color: #EBF4F4; 
+            border: 1px solid #B6D2D2;
+            border-radius: var(--radius-md);
+            padding: 20px;
+        }
+
+        .pena-box label {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .pena-box .sub-label {
+            color: var(--primary);
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .pena-valor {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .pena-numero {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--dark-green);
+            line-height: 1;
+        }
+
+        .pena-unidade {
+            font-size: 1rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .btn-group { display: flex; gap: 16px; margin-top: 32px; }
+        button { flex: 1; padding: 16px 24px; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-calc { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: var(--surface); }
+        .btn-clear { background-color: transparent; color: var(--text-muted); border: 2px solid var(--border-light); }
+
+        .result-box { display: none; background-color: var(--dark-green); color: var(--surface); padding: 32px; border-radius: var(--radius-lg); margin-top: 40px; }
+        .result-box.active { display: block; }
+        .result-number { font-size: 4.5rem; font-weight: 800; color: var(--primary); text-align: center; }
+        .result-label { font-size: 1.2rem; color: #A0C4C4; text-transform: uppercase; text-align: center; }
+        .formula { font-family: monospace; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; color: #87baba; text-align: center; margin-top: 25px; }
+        .error-msg { display: none; background-color: var(--error-bg); color: var(--error-text); padding: 16px; border-radius: 8px; border-left: 4px solid var(--error-text); margin-bottom: 24px; }
+
+        @media (max-width: 600px) {
+            .penas-container {
+                grid-template-columns: 1fr;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <a href="index.html" style="text-decoration: none;" title="Voltar para a Página Inicial">
+            <div class="header-emoji">⚖️</div>
+        </a>
+        <h1>Calculadora de Multa Penal</h1>
+    </div>
+    
+    <div id="errorBox" class="error-msg"></div>
+
+    <form id="calcForm">
+        <div class="card">
+            <h2 class="section-title">Infração Penal</h2>
+            <select id="tipoCrime">
+                <option value="geral">Código Penal (Regra Geral)</option>
+                <option value="drogas">Tráfico de Drogas (Lei nº 11.343/06)</option>
+            </select>
+            <div class="info-panel">
+                <div class="info-item">
+                    <span class="info-label">Limites de Dias-Multa</span>
+                    <span class="info-value" id="displayLimites">10 a 360 dias</span>
+                </div>
+                <div class="info-item" style="text-align: right;">
+                    <span class="info-label">Fundamento Legal</span>
+                    <span class="info-fundamento" id="displayFundamento">Art. 49 do CP</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">Parâmetros da Pena</h2>
+            
+            <div class="penas-container">
+                <div class="pena-box">
+                    <label>Pena Mínima (P.Mi)</label>
+                    <span class="sub-label">Mínimo previsto no tipo penal</span>
+                    <div class="pena-valor">
+                        <span class="pena-numero" id="pMiNumero">1</span>
+                        <span class="pena-unidade" id="pMiUnidade">ano</span>
+                    </div>
+                </div>
+
+                <div class="pena-box">
+                    <label>Pena Máxima (P.Ma)</label>
+                    <span class="sub-label">Máximo previsto no tipo penal</span>
+                    <div class="pena-valor">
+                        <span class="pena-numero" id="pMaNumero">4</span>
+                        <span class="pena-unidade" id="pMaUnidade">anos</span>
+                    </div>
+                </div>
+            </div>
+
+            <label>Pena Aplicada (P.A)</label>
+            <span class="sub-label">Pena Definitiva Fixada (Concreta)</span>
+            <div class="time-grid">
+                <input type="number" id="paAnos" min="0" title="Anos" placeholder="Anos">
+                <input type="number" id="paMeses" min="0" title="Meses" placeholder="Meses">
+                <input type="number" id="paDias" min="0" title="Dias" placeholder="Dias">
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button type="button" class="btn-clear" onclick="window.location.href='index.html'">Voltar</button>
+            <button type="button" class="btn-clear" onclick="limpar()">Novo Cálculo</button>
+            <button type="button" class="btn-calc" onclick="calcular()">Calcular Multa</button>
+        </div>
+    </form>
+
+    <div id="resultadoBox" class="result-box">
+        <div class="result-number" id="resDiasMulta">0</div>
+        <div class="result-label">Dias-Multa</div>
+        <div class="formula" id="formulaText"></div>
+    </div>
+</div>
+
+<script>
+    const configs = {
+        geral: { min: 10, max: 360, fund: "Art. 49 do CP", mi: [1,0,0], ma: [4,0,0] },
+        drogas: { min: 500, max: 1500, fund: "Art. 33 da Lei 11.343/06", mi: [5,0,0], ma: [15,0,0] }
+    };
+
+    document.getElementById('tipoCrime').addEventListener('change', function() {
+        const c = configs[this.value];
+        document.getElementById('displayLimites').innerText = `${c.min} a ${c.max} dias`;
+        document.getElementById('displayFundamento').innerText = c.fund;
+        
+        document.getElementById('pMiNumero').innerText = c.mi[0];
+        document.getElementById('pMiUnidade').innerText = c.mi[0] === 1 ? 'ano' : 'anos';
+
+        document.getElementById('pMaNumero').innerText = c.ma[0];
+        document.getElementById('pMaUnidade').innerText = c.ma[0] === 1 ? 'anos' : 'anos';
+    });
+
+    function converteParaDias(a, m, d) { return (Number(a)*365) + (Number(m)*30) + Number(d); }
+
+    function calcular() {
+        const c = configs[document.getElementById('tipoCrime').value];
+        const mi = converteParaDias(c.mi[0], c.mi[1], c.mi[2]);
+        const ma = converteParaDias(c.ma[0], c.ma[1], c.ma[2]);
+        
+        const anos = document.getElementById('paAnos').value || 0;
+        const meses = document.getElementById('paMeses').value || 0;
+        const dias = document.getElementById('paDias').value || 0;
+        
+        const pa = converteParaDias(anos, meses, dias);
+
+        if (pa < mi || pa > ma) {
+            alert("A Pena Aplicada deve estar entre " + c.mi[0] + " e " + c.ma[0] + " anos.");
+            return;
+        }
+
+        const fracao = (pa - mi) / (ma - mi);
+        const res = Math.round(c.min + (fracao * (c.max - c.min)));
+        
+        document.getElementById('resDiasMulta').innerText = res;
+        document.getElementById('resultadoBox').classList.add('active');
+    }
+
+    function limpar() {
+        document.getElementById('calcForm').reset();
+        document.getElementById('resultadoBox').classList.remove('active');
+        document.getElementById('tipoCrime').dispatchEvent(new Event('change'));
+    }
+</script>
+</body>
+</html>
