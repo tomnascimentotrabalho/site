@@ -182,6 +182,9 @@
             margin-bottom: 10px;
         }
         .fase-col input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); }
+        
+        .tag-prep { color: #c62828; font-weight: bold; font-size: 0.7rem; margin-left: 4px; background: #ffcdd2; padding: 2px 4px; border-radius: 4px;}
+        .tag-prep-at { color: #1565c0; font-weight: bold; font-size: 0.7rem; margin-left: 4px; background: #bbdefb; padding: 2px 4px; border-radius: 4px;}
 
         /* Estilos específicos para Fase 3 (Itens com Select) */
         .fase3-item {
@@ -209,6 +212,7 @@
             font-size: 0.9rem;
             color: var(--dark-green);
         }
+        .log-item { margin-bottom: 6px; display: block; }
         .sumula-box {
             background: #fff8e1;
             border-left: 4px solid #ffb300;
@@ -295,7 +299,7 @@
             <div class="header-emoji">🧮</div>
         </a>
         <h1>Calculadora de Dosimetria</h1>
-        <p>Art. 59 CP · Cálculo Trifásico</p>
+        <p>Art. 59 CP · Cálculo Trifásico c/ Regras Art. 67</p>
     </div>
     
     <div id="erroMsg" class="error-msg"></div>
@@ -331,24 +335,24 @@
                 <label><input type="checkbox" id="cbVitima"><div class="cb-content"><span class="cb-title">Comportamento da vítima</span><span class="cb-desc">Se a vítima contribuiu para o crime.</span></div></label>
             </div>
 
-            <div class="row-inline">
+            <div class="row-inline" style="margin-bottom: 4px;">
                 <label>Fator de aumento (por circunstância)</label>
                 <input type="number" id="fatorCirc" value="0.125" step="0.001" min="0" max="2">
             </div>
-            <span class="sub-label">Exemplo: 1/8 = 0,125</span>
+            <span class="sub-label" style="margin-bottom: 20px;">Exemplo: 1/8 = 0.125</span>
         </div>
 
         <div class="card">
             <h2 class="section-title">
                 ② Atenuantes e Agravantes 
-                <span class="fase-badge">Art. 61 a 65 CP</span>
+                <span class="fase-badge">Art. 61 a 67 CP</span>
             </h2>
             
             <div class="fase-grid">
                 <div class="fase-col">
                     <h4>🔺 Agravantes</h4>
-                    <label><input type="checkbox" id="agravanteReincidencia"> Reincidência</label>
-                    <label><input type="checkbox" id="agravanteMotivoTorpe"> Motivo torpe/fútil</label>
+                    <label><input type="checkbox" id="agravanteReincidencia"> Reincidência <span class="tag-prep">PREP</span></label>
+                    <label><input type="checkbox" id="agravanteMotivoTorpe"> Motivo torpe/fútil <span class="tag-prep">PREP</span></label>
                     <label><input type="checkbox" id="agravanteMeioCruel"> Meio cruel / traição</label>
                     <label><input type="checkbox" id="agravanteRelacaoVitima"> Relação com a vítima</label>
                     <label><input type="checkbox" id="agravanteAbusoAutoridade"> Abuso de autoridade</label>
@@ -358,37 +362,36 @@
                 
                 <div class="fase-col">
                     <h4>🔻 Atenuantes</h4>
-                    <label><input type="checkbox" id="atenuanteMenor21"> Idade (menor 21)</label>
-                    <label><input type="checkbox" id="atenuanteMaior70"> Idade (maior 70)</label>
+                    <label><input type="checkbox" id="atenuanteMenor21"> Idade (menor 21) <span class="tag-prep-at">PREP</span></label>
+                    <label><input type="checkbox" id="atenuanteMaior70"> Idade (maior 70) <span class="tag-prep-at">PREP</span></label>
+                    <label><input type="checkbox" id="atenuanteConfissao"> Confissão espontânea <span class="tag-prep-at">PREP</span></label>
                     <label><input type="checkbox" id="atenuanteMotivoRelevante"> Motivo relevante</label>
                     <label><input type="checkbox" id="atenuanteReparacaoDano"> Reparação do dano</label>
                     <label><input type="checkbox" id="atenuanteViolentaEmocao"> Violenta emoção</label>
                     <label><input type="checkbox" id="atenuanteCoacaoMoral"> Coação moral</label>
-                    <label><input type="checkbox" id="atenuanteConfissao"> Confissão espontânea</label>
                     <label><input type="checkbox" id="atenuanteInominada"> Atenuante inominada</label>
                 </div>
             </div>
 
             <div class="input-grid">
                 <div>
-                    <label>Fator Agravante</label>
-                    <input type="number" id="fatorAgravante" value="0.166" step="0.001" min="0">
-                    <span class="sub-label">Ex: 1/6 = 0.166</span>
+                    <label>Fator Padrão (1/6)</label>
+                    <input type="number" id="fatorPadrao" value="0.1666" step="0.0001" min="0">
+                    <span class="sub-label">Aplica-se em regras normais.</span>
                 </div>
                 <div>
-                    <label>Fator Atenuante</label>
-                    <input type="number" id="fatorAtenuante" value="0.166" step="0.001" min="0">
-                    <span class="sub-label">Ex: 1/6 = 0.166</span>
+                    <label>Fator Reduzido (1/12)</label>
+                    <input type="number" id="fatorReduzido" value="0.0833" step="0.0001" min="0">
+                    <span class="sub-label">Paradigma quando a força é reduzida.</span>
                 </div>
             </div>
 
             <div class="sumula-box">
-                <strong>📜 Súmula 231 do STJ:</strong> 
-                <span class="destaque">“A incidência da circunstância atenuante não pode conduzir à redução da pena abaixo do mínimo legal.”</span>
-                <span class="sub-aviso">✅ Sistema aplica automaticamente na Fase 2.</span>
+                <strong>📜 Súmulas 231 e 545 do STJ + Art. 67 CP:</strong> 
+                <span class="destaque">A preponderância obedece lógicas de compensação 1-para-1 ou adoção de saldo reduzido (1/12) em concurso com as não preponderantes.</span>
             </div>
 
-            <div id="detalheCompensacao" class="info-panel"></div>
+            <div id="detalheCompensacao" class="info-panel" style="display:none;"></div>
             <div id="avisoSumula" class="warning-panel"></div>
         </div>
 
@@ -542,7 +545,7 @@
         const btnVoltar = document.getElementById('btnVoltar');
         const btnNovoCalculo = document.getElementById('btnNovoCalculo');
         
-        // Arrays de configuração da Fase 3
+        // Arrays de configuração da Fase 3 Restaurados do original
         const causasAumento = [
             { id: 'aumConcursoFormal', sel: 'selConcursoFormal', label: 'Concurso Formal' },
             { id: 'aumCrimeContinuado', sel: 'selCrimeContinuado', label: 'Crime Continuado' },
@@ -567,6 +570,12 @@
             { id: 'dimFurtoPrivilegiado', sel: 'selFurtoPrivilegiado', label: 'Furto Privilegiado' },
             { id: 'dimTraficoPrivilegiado', sel: 'selTraficoPrivilegiado', label: 'Tráfico Privilegiado' }
         ];
+
+        // Mapeamento Jurídico - Fase 2
+        const ids_AP = ['agravanteReincidencia', 'agravanteMotivoTorpe'];
+        const ids_AN = ['agravanteMeioCruel', 'agravanteRelacaoVitima', 'agravanteAbusoAutoridade', 'agravanteVulnerabilidade', 'agravanteConcursoPessoas'];
+        const ids_TP = ['atenuanteMenor21', 'atenuanteMaior70', 'atenuanteConfissao'];
+        const ids_TN = ['atenuanteMotivoRelevante', 'atenuanteReparacaoDano', 'atenuanteViolentaEmocao', 'atenuanteCoacaoMoral', 'atenuanteInominada'];
 
         function converterAnosParaAnosMesesDias(anos) {
             if (anos < 0) anos = 0;
@@ -600,6 +609,13 @@
             return Array.from(document.querySelectorAll(`input[id^="${prefixo}"]`)).filter(cb => cb.checked).length;
         }
 
+        function countList(lista) {
+            return lista.filter(id => {
+                let el = document.getElementById(id);
+                return el && el.checked;
+            }).length;
+        }
+
         function calcular() {
             const erroMsg = document.getElementById('erroMsg');
             const detalheCompensacao = document.getElementById('detalheCompensacao');
@@ -607,6 +623,7 @@
             
             erroMsg.style.display = 'none';
             erroMsg.innerHTML = '';
+            detalheCompensacao.style.display = 'none';
             detalheCompensacao.innerHTML = '';
             avisoSumula.classList.remove('visivel');
             avisoSumula.innerHTML = '';
@@ -627,22 +644,52 @@
             if (penaBase > max) penaBase = max;
             if (penaBase < min) penaBase = min;
 
-            // FASE 2
-            const totalAgravantes = contarCheckboxes('agravante');
-            const totalAtenuantes = contarCheckboxes('atenuante');
-            const fatorAgra = parseFloat(document.getElementById('fatorAgravante').value) || 0;
-            const fatorAten = parseFloat(document.getElementById('fatorAtenuante').value) || 0;
+            // FASE 2 - LÓGICA DO ART. 67 CP
+            let countAP = countList(ids_AP);
+            let countAN = countList(ids_AN);
+            let countTP = countList(ids_TP);
+            let countTN = countList(ids_TN);
 
-            const pesoAgravantes = totalAgravantes * fatorAgra;
-            const pesoAtenuantes = totalAtenuantes * fatorAten;
-            const saldoFatores = pesoAgravantes - pesoAtenuantes;
+            const fatorPadrao = parseFloat(document.getElementById('fatorPadrao').value) || 0;
+            const fatorReduzido = parseFloat(document.getElementById('fatorReduzido').value) || 0;
 
-            if (totalAtenuantes > 0 || totalAgravantes > 0) {
-                let txt = `<strong>Detalhamento Fase 2:</strong> Fator +${(pesoAgravantes).toFixed(3)} (agravantes) e -${(pesoAtenuantes).toFixed(3)} (atenuantes). `;
-                txt += saldoFatores > 0 ? `Saldo de aumento.` : saldoFatores < 0 ? `Saldo de redução.` : `Compensação equilibrada.`;
-                detalheCompensacao.innerHTML = txt;
+            let logFase2 = [];
+            
+            // 1. Compensação Integral (1-para-1)
+            let paresAnulados = Math.min(countAP, countTP);
+            let remAP = countAP - paresAnulados;
+            let remTP = countTP - paresAnulados;
+
+            if (paresAnulados > 0) {
+                logFase2.push(`<span class="log-item">⚖️ <strong>Compensação Integral:</strong> ${paresAnulados} Agravante(s) e Atenuante(s) preponderantes se anularam.</span>`);
+            }
+
+            // 2. Redução de Força (Critério 3 da Jurisprudência) e Cálculo Remanescente
+            let saldoFatores = 0;
+
+            if (remAP > 0 && countTN > 0) {
+                // Agravante Preponderante vs Atenuantes Comuns
+                // A força da preponderante dita a direção, mas o saldo de aumento é reduzido para 1/12
+                saldoFatores = fatorReduzido; // +1/12
+                logFase2.push(`<span class="log-item">🔺 <strong>Preponderância Agravante:</strong> Força reduzida pelo concurso com atenuante(s). Saldo: aumento de 1/12.</span>`);
+            } else if (remTP > 0 && countAN > 0) {
+                // Atenuante Preponderante vs Agravantes Comuns (Ex: Menoridade vs Meio Cruel e Recurso)
+                // A força da preponderante dita a direção, mas o saldo de redução é reduzido para 1/12
+                saldoFatores = -fatorReduzido; // -1/12
+                logFase2.push(`<span class="log-item">🔻 <strong>Preponderância Atenuante:</strong> Força reduzida pelo concurso com agravante(s). Saldo: redução de 1/12.</span>`);
             } else {
-                detalheCompensacao.innerHTML = 'Nenhum agravante ou atenuante selecionado na Fase 2.';
+                // Regra normal sem choque de preponderante e oponente de peso comum
+                let totalAgravantesCalculadas = (remAP + countAN) * fatorPadrao;
+                let totalAtenuantesCalculadas = (remTP + countTN) * fatorPadrao;
+                saldoFatores = totalAgravantesCalculadas - totalAtenuantesCalculadas;
+            }
+
+            if (logFase2.length > 0 || saldoFatores !== 0) {
+                detalheCompensacao.style.display = 'block';
+                let headerTxt = `<strong>Relatório da Fase 2 (Art. 67 CP):</strong><br>`;
+                let direcao = saldoFatores > 0 ? "Aumento" : saldoFatores < 0 ? "Redução" : "Sem alteração";
+                let pesoTxt = `Fator Final de Ajuste: ${direcao} de ${(Math.abs(saldoFatores) * 100).toFixed(2)}%<br>`;
+                detalheCompensacao.innerHTML = headerTxt + logFase2.join('') + `<span class="log-item" style="margin-top:8px;">${pesoTxt}</span>`;
             }
 
             let penaFase2 = penaBase + (penaBase * saldoFatores);
@@ -651,14 +698,13 @@
             if (penaFase2 > max) penaFase2 = max;
             if (penaFase2 < min) {
                 penaFase2 = min;
-                if (totalAtenuantes > 0) aplicouSumula = true;
+                if (saldoFatores < 0) aplicouSumula = true;
             }
 
             // FASE 3
             let penaFase3 = penaFase2;
             let logFase3 = [];
 
-            // Aplicando causas de aumento sucessivamente (Cascata)
             causasAumento.forEach(item => {
                 const cb = document.getElementById(item.id);
                 const sel = document.getElementById(item.sel);
@@ -669,7 +715,6 @@
                 }
             });
 
-            // Aplicando causas de diminuição sucessivamente (Cascata)
             causasDiminuicao.forEach(item => {
                 const cb = document.getElementById(item.id);
                 const sel = document.getElementById(item.sel);
@@ -691,7 +736,7 @@
 
             document.getElementById('fase1Display').innerHTML = `<strong>Fase 1:</strong> ${penaBaseRound} ${formatarDataResumida(penaBaseRound)} (${countCirc} circ. desf.)`;
             
-            let sumulaText = aplicouSumula ? ' [⚠️ Súmula 231]' : '';
+            let sumulaText = aplicouSumula ? ' [⚠️ Limite Súmula 231]' : '';
             document.getElementById('fase2Display').innerHTML = `<strong>Fase 2:</strong> ${penaFase2Round} ${formatarDataResumida(penaFase2Round)}${sumulaText}`;
 
             let extra = logFase3.length ? ` (${logFase3.join(' | ')})` : ' (Nenhum fator aplicado)';
@@ -699,7 +744,7 @@
 
             if (aplicouSumula) {
                 avisoSumula.classList.add('visivel');
-                avisoSumula.innerHTML = `<strong>⚠️ Aplicação Prática:</strong> A pena foi limitada ao mínimo legal (${min.toFixed(2)} anos) respeitando a Súmula 231 do STJ.`;
+                avisoSumula.innerHTML = `<strong>⚠️ Aplicação Prática:</strong> A pena foi travada no mínimo legal (${min.toFixed(2)} anos) respeitando a Súmula 231 do STJ, independentemente de saldo residual de atenuantes.`;
             }
         }
 
@@ -714,12 +759,12 @@
             document.getElementById('fase1Display').innerHTML = '<strong>Fase 1:</strong> —';
             document.getElementById('fase2Display').innerHTML = '<strong>Fase 2:</strong> —';
             document.getElementById('fase3Display').innerHTML = '<strong>Fase 3:</strong> —';
+            document.getElementById('detalheCompensacao').style.display = 'none';
             document.getElementById('detalheCompensacao').innerHTML = '';
             document.getElementById('avisoSumula').classList.remove('visivel');
             document.getElementById('erroMsg').style.display = 'none';
         });
 
-        // ⭐ CORREÇÃO: Evento para o botão Voltar (redireciona para index.html)
         btnVoltar.addEventListener('click', () => {
             window.location.href = 'index.html';
         });
