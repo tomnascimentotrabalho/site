@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Dosimetria da Pena (Art. 59 CP)</title>
+    <title>Calculadora de Dosimetria</title>
     <style>
         /* --- Variáveis de Tema --- */
         :root {
@@ -37,7 +37,7 @@
         
         .container { 
             background-color: var(--surface); 
-            max-width: 900px; 
+            max-width: 950px; 
             width: 100%; 
             padding: 40px; 
             border-radius: var(--radius-lg); 
@@ -107,12 +107,11 @@
         select:focus, input[type="number"]:focus { border-color: var(--primary); }
 
         .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        
         .row-inline { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
         .row-inline label { flex: 1; min-width: 200px; }
         .row-inline input, .row-inline select { flex: 1; min-width: 150px; }
 
-        /* --- Checkboxes Customizados FASE 1 (Mini Cards) --- */
+        /* --- Checkboxes Customizados --- */
         .checkbox-group {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -146,37 +145,24 @@
             cursor: pointer;
             margin-top: 2px;
         }
-        .cb-content {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .cb-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--dark-green);
-        }
-        .cb-desc {
-            font-weight: 400;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            line-height: 1.35;
-        }
+        .cb-content { display: flex; flex-direction: column; gap: 4px; }
+        .cb-title { font-weight: 600; font-size: 0.95rem; color: var(--dark-green); }
+        .cb-desc { font-weight: 400; font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; }
 
-        /* --- Grid de Agravantes e Atenuantes FASE 2 --- */
-        .fase2-grid {
+        /* --- Grids Colunados (Fase 2 e Fase 3) --- */
+        .fase-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin-bottom: 20px;
         }
-        .fase2-col {
+        .fase-col {
             background: #EBF4F4;
             border: 1px solid #B6D2D2;
             border-radius: var(--radius-md);
             padding: 16px;
         }
-        .fase2-col h4 {
+        .fase-col h4 {
             color: var(--secondary);
             font-size: 0.9rem;
             text-transform: uppercase;
@@ -185,7 +171,7 @@
             border-bottom: 2px solid #B6D2D2;
             padding-bottom: 6px;
         }
-        .fase2-col label {
+        .fase-col label {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -195,7 +181,23 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
-        .fase2-col input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); }
+        .fase-col input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); }
+
+        /* Estilos específicos para Fase 3 (Itens com Select) */
+        .fase3-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+        .fase3-item label { margin-bottom: 0; flex: 1; font-size: 0.82rem; }
+        .fase3-item select {
+            width: 80px;
+            padding: 4px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
 
         /* --- Alertas e Infos --- */
         .info-panel { 
@@ -207,7 +209,6 @@
             font-size: 0.9rem;
             color: var(--dark-green);
         }
-        
         .sumula-box {
             background: #fff8e1;
             border-left: 4px solid #ffb300;
@@ -220,17 +221,6 @@
         .sumula-box strong { color: #8f6200; display: block; margin-bottom: 4px; }
         .sumula-box .destaque { font-weight: 500; }
         .sumula-box .sub-aviso { font-size: 0.8rem; opacity: 0.8; display: block; margin-top: 8px; font-weight: 600; }
-
-        .nota-lei {
-            background: #EBF4F4;
-            border-left: 4px solid var(--secondary);
-            padding: 12px 16px;
-            border-radius: 0 var(--radius-md) var(--radius-md) 0;
-            margin-top: 16px;
-            font-size: 0.85rem;
-            color: var(--secondary);
-            font-weight: 500;
-        }
 
         .warning-panel {
             background: #fff8e1;
@@ -288,10 +278,12 @@
         .formula strong { color: white; }
 
         @media (max-width: 768px) {
-            .fase2-grid, .input-grid { grid-template-columns: 1fr; }
+            .fase-grid, .input-grid { grid-template-columns: 1fr; }
             .btn-group { flex-direction: column; }
             .row-inline { flex-direction: column; align-items: stretch; gap: 8px; }
             .result-number { font-size: 2.5rem; }
+            .fase3-item { flex-direction: column; align-items: stretch; }
+            .fase3-item select { width: 100%; margin-top: 6px; }
         }
     </style>
 </head>
@@ -300,9 +292,9 @@
 <div class="container">
     <div class="header">
         <a href="index.html" style="text-decoration: none;" title="Voltar para a Página Inicial">
-            <div class="header-emoji">⚖️</div>
+            <div class="header-emoji">🧮</div>
         </a>
-        <h1>Dosimetria da Pena</h1>
+        <h1>Calculadora de Dosimetria</h1>
         <p>Art. 59 CP · Cálculo Trifásico</p>
     </div>
     
@@ -328,64 +320,15 @@
 
             <label style="margin-top: 10px; margin-bottom: 8px;">Circunstâncias Judiciais Desfavoráveis</label>
             
-            <!-- Grupo Refeito com Legendas -->
             <div class="checkbox-group">
-                <label>
-                    <input type="checkbox" id="cbCulpabilidade">
-                    <div class="cb-content">
-                        <span class="cb-title">Culpabilidade</span>
-                        <span class="cb-desc">Reprovação maior ou menor pela conduta (ex: dolo intenso x mero erro).</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" id="cbAntecedentes">
-                    <div class="cb-content">
-                        <span class="cb-title">Antecedentes</span>
-                        <span class="cb-desc">Existência de condenações transitadas em julgado (se houver, desfavorável).</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" id="cbConduta">
-                    <div class="cb-content">
-                        <span class="cb-title">Conduta social</span>
-                        <span class="cb-desc">Comportamento do réu na comunidade (vida pregressa lícita ou não).</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" id="cbPersonalidade">
-                    <div class="cb-content">
-                        <span class="cb-title">Personalidade</span>
-                        <span class="cb-desc">Traços de caráter e índole (ex: agressividade, empatia).</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" id="cbMotivos">
-                    <div class="cb-content">
-                        <span class="cb-title">Motivos</span>
-                        <span class="cb-desc">Razão que levou ao crime (ex: vingança x compaixão).</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" id="cbCircunstancias">
-                    <div class="cb-content">
-                        <span class="cb-title">Circunstâncias</span>
-                        <span class="cb-desc">Modo e contexto do fato (ex: premeditação x surpresa).</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" id="cbConsequencias">
-                    <div class="cb-content">
-                        <span class="cb-title">Consequências</span>
-                        <span class="cb-desc">Gravidade dos resultados gerados (ex: dano irreversível x leve).</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" id="cbVitima">
-                    <div class="cb-content">
-                        <span class="cb-title">Comportamento da vítima</span>
-                        <span class="cb-desc">Se a vítima provocou ou contribuiu de alguma forma para o crime.</span>
-                    </div>
-                </label>
+                <label><input type="checkbox" id="cbCulpabilidade"><div class="cb-content"><span class="cb-title">Culpabilidade</span><span class="cb-desc">Reprovação maior ou menor pela conduta.</span></div></label>
+                <label><input type="checkbox" id="cbAntecedentes"><div class="cb-content"><span class="cb-title">Antecedentes</span><span class="cb-desc">Condenações transitadas em julgado.</span></div></label>
+                <label><input type="checkbox" id="cbConduta"><div class="cb-content"><span class="cb-title">Conduta social</span><span class="cb-desc">Comportamento do réu na comunidade.</span></div></label>
+                <label><input type="checkbox" id="cbPersonalidade"><div class="cb-content"><span class="cb-title">Personalidade</span><span class="cb-desc">Traços de caráter e índole.</span></div></label>
+                <label><input type="checkbox" id="cbMotivos"><div class="cb-content"><span class="cb-title">Motivos</span><span class="cb-desc">Razão que levou ao crime.</span></div></label>
+                <label><input type="checkbox" id="cbCircunstancias"><div class="cb-content"><span class="cb-title">Circunstâncias</span><span class="cb-desc">Modo e contexto do fato.</span></div></label>
+                <label><input type="checkbox" id="cbConsequencias"><div class="cb-content"><span class="cb-title">Consequências</span><span class="cb-desc">Gravidade dos resultados gerados.</span></div></label>
+                <label><input type="checkbox" id="cbVitima"><div class="cb-content"><span class="cb-title">Comportamento da vítima</span><span class="cb-desc">Se a vítima contribuiu para o crime.</span></div></label>
             </div>
 
             <div class="row-inline">
@@ -398,11 +341,11 @@
         <div class="card">
             <h2 class="section-title">
                 ② Atenuantes e Agravantes 
-                <span class="fase-badge">Compensação Automática</span>
+                <span class="fase-badge">Art. 61 a 65 CP</span>
             </h2>
             
-            <div class="fase2-grid">
-                <div class="fase2-col">
+            <div class="fase-grid">
+                <div class="fase-col">
                     <h4>🔺 Agravantes</h4>
                     <label><input type="checkbox" id="agravanteReincidencia"> Reincidência</label>
                     <label><input type="checkbox" id="agravanteMotivoTorpe"> Motivo torpe/fútil</label>
@@ -413,7 +356,7 @@
                     <label><input type="checkbox" id="agravanteConcursoPessoas"> Concurso de pessoas</label>
                 </div>
                 
-                <div class="fase2-col">
+                <div class="fase-col">
                     <h4>🔻 Atenuantes</h4>
                     <label><input type="checkbox" id="atenuanteMenor21"> Idade (menor 21)</label>
                     <label><input type="checkbox" id="atenuanteMaior70"> Idade (maior 70)</label>
@@ -442,46 +385,135 @@
             <div class="sumula-box">
                 <strong>📜 Súmula 231 do STJ:</strong> 
                 <span class="destaque">“A incidência da circunstância atenuante não pode conduzir à redução da pena abaixo do mínimo legal.”</span>
-                <span class="sub-aviso">✅ Sistema aplica automaticamente: a pena da Fase 2 NUNCA fica abaixo do mínimo.</span>
+                <span class="sub-aviso">✅ Sistema aplica automaticamente na Fase 2.</span>
             </div>
 
             <div id="detalheCompensacao" class="info-panel"></div>
-            
             <div id="avisoSumula" class="warning-panel"></div>
         </div>
 
         <div class="card">
             <h2 class="section-title">
-                ③ Causas de Aumento / Diminuição
-                <span class="fase-badge">Fração</span>
+                ③ Causas de Aumento e Diminuição
+                <span class="fase-badge">Fração (Art. 68 CP)</span>
             </h2>
             
-            <div class="row-inline">
-                <label style="display:flex; align-items:center; gap:8px;">
-                    <input type="checkbox" id="causaTentativa" style="width:18px; height:18px; accent-color:var(--primary);"> 
-                    Tentativa (diminuição)
-                </label>
-                <select id="tentativaFator">
-                    <option value="0.333">1/3 (0,333)</option>
-                    <option value="0.5">1/2 (0,5)</option>
-                    <option value="0.666">2/3 (0,666)</option>
-                </select>
-            </div>
-            
-            <div class="row-inline">
-                <label style="display:flex; align-items:center; gap:8px;">
-                    <input type="checkbox" id="causaContinuado" style="width:18px; height:18px; accent-color:var(--primary);"> 
-                    Crime continuado (aumento)
-                </label>
-                <select id="continuadoFator">
-                    <option value="0.1">1/10 (0,1)</option>
-                    <option value="0.2">1/5 (0,2)</option>
-                    <option value="0.333">1/3 (0,333)</option>
-                </select>
-            </div>
+            <div class="fase-grid">
+                <div class="fase-col">
+                    <h4>🔺 Causas de Aumento</h4>
+                    
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumConcursoFormal"> Concurso formal</label>
+                        <select id="selConcursoFormal">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option><option value="0.5">1/2</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumCrimeContinuado"> Crime continuado</label>
+                        <select id="selCrimeContinuado">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumAberratioIctus"> Aberratio ictus</label>
+                        <select id="selAberratioIctus">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option><option value="0.5">1/2</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumResultDiverso"> Result. diverso do pretendido</label>
+                        <select id="selResultDiverso">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option><option value="0.5">1/2</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumHomCulposo"> Homicídio culposo majorado</label>
+                        <select id="selHomCulposo"><option value="0.3333">1/3</option></select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumCrimesHonra"> Crimes contra a honra</label>
+                        <select id="selCrimesHonra"><option value="0.3333">1/3</option></select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumFurtoNoturno"> Furto noturno</label>
+                        <select id="selFurtoNoturno"><option value="0.3333">1/3</option></select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumRouboMajorado"> Roubo majorado</label>
+                        <select id="selRouboMajorado">
+                            <option value="0.3333">1/3</option><option value="0.375">3/8</option><option value="0.4166">5/12</option><option value="0.4583">11/24</option><option value="0.5">1/2</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumRouboArmaFogo"> Roubo com arma de fogo</label>
+                        <select id="selRouboArmaFogo"><option value="0.6666">2/3</option></select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumCrimesSexuais"> Crimes sexuais (Maj.)</label>
+                        <select id="selCrimesSexuais">
+                            <option value="0.25">1/4</option><option value="0.3333">1/3</option><option value="0.5">1/2</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="aumTraficoDrogas"> Tráfico de drogas (Maj.)</label>
+                        <select id="selTraficoDrogas">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                </div>
 
-            <div class="nota-lei">
-                <strong>⚡ Leitura:</strong> natureza/quantidade (Lei 11.343) – não incluso, mas parametrizável.
+                <div class="fase-col">
+                    <h4>🔻 Causas de Diminuição</h4>
+
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimTentativa"> Tentativa</label>
+                        <select id="selTentativa">
+                            <option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimArrependimento"> Arrependimento posterior</label>
+                        <select id="selArrependimento">
+                            <option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimErroProibicao"> Erro de proibição evitável</label>
+                        <select id="selErroProibicao">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimSemiImputabilidade"> Semi-imputabilidade</label>
+                        <select id="selSemiImputabilidade">
+                            <option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimEmbriaguez"> Embriaguez incompleta</label>
+                        <select id="selEmbriaguez">
+                            <option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimHomPrivilegiado"> Homicídio privilegiado</label>
+                        <select id="selHomPrivilegiado">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimFurtoPrivilegiado"> Furto privilegiado</label>
+                        <select id="selFurtoPrivilegiado">
+                            <option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                    <div class="fase3-item">
+                        <label><input type="checkbox" id="dimTraficoPrivilegiado"> Tráfico privilegiado</label>
+                        <select id="selTraficoPrivilegiado">
+                            <option value="0.1666">1/6</option><option value="0.2">1/5</option><option value="0.25">1/4</option><option value="0.3333">1/3</option><option value="0.5">1/2</option><option value="0.6666">2/3</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -509,56 +541,32 @@
         const btn = document.getElementById('calcularBtn');
         const btnVoltar = document.getElementById('btnVoltar');
         const btnNovoCalculo = document.getElementById('btnNovoCalculo');
-        const minPenaInput = document.getElementById('minPena');
-        const maxPenaInput = document.getElementById('maxPena');
-        const fatorCircInput = document.getElementById('fatorCirc');
+        
+        // Arrays de configuração da Fase 3
+        const causasAumento = [
+            { id: 'aumConcursoFormal', sel: 'selConcursoFormal', label: 'Concurso Formal' },
+            { id: 'aumCrimeContinuado', sel: 'selCrimeContinuado', label: 'Crime Continuado' },
+            { id: 'aumAberratioIctus', sel: 'selAberratioIctus', label: 'Aberratio Ictus' },
+            { id: 'aumResultDiverso', sel: 'selResultDiverso', label: 'Resultado Diverso' },
+            { id: 'aumHomCulposo', sel: 'selHomCulposo', label: 'Homicídio Culp. Maj.' },
+            { id: 'aumCrimesHonra', sel: 'selCrimesHonra', label: 'Crimes Contra Honra' },
+            { id: 'aumFurtoNoturno', sel: 'selFurtoNoturno', label: 'Furto Noturno' },
+            { id: 'aumRouboMajorado', sel: 'selRouboMajorado', label: 'Roubo Majorado' },
+            { id: 'aumRouboArmaFogo', sel: 'selRouboArmaFogo', label: 'Roubo com Arma' },
+            { id: 'aumCrimesSexuais', sel: 'selCrimesSexuais', label: 'Crimes Sexuais' },
+            { id: 'aumTraficoDrogas', sel: 'selTraficoDrogas', label: 'Tráfico Majorado' }
+        ];
 
-        // checkboxes fase1
-        const cbCulpabilidade = document.getElementById('cbCulpabilidade');
-        const cbAntecedentes = document.getElementById('cbAntecedentes');
-        const cbConduta = document.getElementById('cbConduta');
-        const cbPersonalidade = document.getElementById('cbPersonalidade');
-        const cbMotivos = document.getElementById('cbMotivos');
-        const cbCircunstancias = document.getElementById('cbCircunstancias');
-        const cbConsequencias = document.getElementById('cbConsequencias');
-        const cbVitima = document.getElementById('cbVitima');
-
-        // fase2 - AGRAVANTES
-        const agravanteReincidencia = document.getElementById('agravanteReincidencia');
-        const agravanteMotivoTorpe = document.getElementById('agravanteMotivoTorpe');
-        const agravanteMeioCruel = document.getElementById('agravanteMeioCruel');
-        const agravanteRelacaoVitima = document.getElementById('agravanteRelacaoVitima');
-        const agravanteAbusoAutoridade = document.getElementById('agravanteAbusoAutoridade');
-        const agravanteVulnerabilidade = document.getElementById('agravanteVulnerabilidade');
-        const agravanteConcursoPessoas = document.getElementById('agravanteConcursoPessoas');
-
-        // fase2 - ATENUANTES
-        const atenuanteMenor21 = document.getElementById('atenuanteMenor21');
-        const atenuanteMaior70 = document.getElementById('atenuanteMaior70');
-        const atenuanteMotivoRelevante = document.getElementById('atenuanteMotivoRelevante');
-        const atenuanteReparacaoDano = document.getElementById('atenuanteReparacaoDano');
-        const atenuanteViolentaEmocao = document.getElementById('atenuanteViolentaEmocao');
-        const atenuanteCoacaoMoral = document.getElementById('atenuanteCoacaoMoral');
-        const atenuanteConfissao = document.getElementById('atenuanteConfissao');
-        const atenuanteInominada = document.getElementById('atenuanteInominada');
-
-        const fatorAtenuanteInput = document.getElementById('fatorAtenuante');
-        const fatorAgravanteInput = document.getElementById('fatorAgravante');
-
-        // fase3
-        const causaTentativa = document.getElementById('causaTentativa');
-        const tentativaFator = document.getElementById('tentativaFator');
-        const causaContinuado = document.getElementById('causaContinuado');
-        const continuadoFator = document.getElementById('continuadoFator');
-
-        const penaFinalDisplay = document.getElementById('penaFinalDisplay');
-        const penaFracionadaDisplay = document.getElementById('penaFracionadaDisplay');
-        const fase1Display = document.getElementById('fase1Display');
-        const fase2Display = document.getElementById('fase2Display');
-        const fase3Display = document.getElementById('fase3Display');
-        const erroMsg = document.getElementById('erroMsg');
-        const detalheCompensacao = document.getElementById('detalheCompensacao');
-        const avisoSumula = document.getElementById('avisoSumula');
+        const causasDiminuicao = [
+            { id: 'dimTentativa', sel: 'selTentativa', label: 'Tentativa' },
+            { id: 'dimArrependimento', sel: 'selArrependimento', label: 'Arrep. Posterior' },
+            { id: 'dimErroProibicao', sel: 'selErroProibicao', label: 'Erro Proibição' },
+            { id: 'dimSemiImputabilidade', sel: 'selSemiImputabilidade', label: 'Semi-imputab.' },
+            { id: 'dimEmbriaguez', sel: 'selEmbriaguez', label: 'Embriaguez' },
+            { id: 'dimHomPrivilegiado', sel: 'selHomPrivilegiado', label: 'Hom. Privilegiado' },
+            { id: 'dimFurtoPrivilegiado', sel: 'selFurtoPrivilegiado', label: 'Furto Privilegiado' },
+            { id: 'dimTraficoPrivilegiado', sel: 'selTraficoPrivilegiado', label: 'Tráfico Privilegiado' }
+        ];
 
         function converterAnosParaAnosMesesDias(anos) {
             if (anos < 0) anos = 0;
@@ -588,87 +596,54 @@
             return partes.length > 0 ? `(${partes.join(' ')})` : '(0 dias)';
         }
 
-        function contarAgravantes() {
-            let count = 0;
-            if (agravanteReincidencia.checked) count++;
-            if (agravanteMotivoTorpe.checked) count++;
-            if (agravanteMeioCruel.checked) count++;
-            if (agravanteRelacaoVitima.checked) count++;
-            if (agravanteAbusoAutoridade.checked) count++;
-            if (agravanteVulnerabilidade.checked) count++;
-            if (agravanteConcursoPessoas.checked) count++;
-            return count;
-        }
-
-        function contarAtenuantes() {
-            let count = 0;
-            if (atenuanteMenor21.checked) count++;
-            if (atenuanteMaior70.checked) count++;
-            if (atenuanteMotivoRelevante.checked) count++;
-            if (atenuanteReparacaoDano.checked) count++;
-            if (atenuanteViolentaEmocao.checked) count++;
-            if (atenuanteCoacaoMoral.checked) count++;
-            if (atenuanteConfissao.checked) count++;
-            if (atenuanteInominada.checked) count++;
-            return count;
+        function contarCheckboxes(prefixo) {
+            return Array.from(document.querySelectorAll(`input[id^="${prefixo}"]`)).filter(cb => cb.checked).length;
         }
 
         function calcular() {
+            const erroMsg = document.getElementById('erroMsg');
+            const detalheCompensacao = document.getElementById('detalheCompensacao');
+            const avisoSumula = document.getElementById('avisoSumula');
+            
             erroMsg.style.display = 'none';
             erroMsg.innerHTML = '';
             detalheCompensacao.innerHTML = '';
             avisoSumula.classList.remove('visivel');
             avisoSumula.innerHTML = '';
 
-            let min = parseFloat(minPenaInput.value);
-            let max = parseFloat(maxPenaInput.value);
+            let min = parseFloat(document.getElementById('minPena').value);
+            let max = parseFloat(document.getElementById('maxPena').value);
             if (isNaN(min) || isNaN(max) || min < 0 || max < 0 || min > max) {
                 erroMsg.style.display = 'block';
                 erroMsg.innerHTML = '⚠️ Intervalo inválido: mínimo deve ser ≥ 0 e ≤ máximo.';
                 return;
             }
             
-            const fatorCirc = parseFloat(fatorCircInput.value) || 0;
-
-            let countCirc = 0;
-            if (cbCulpabilidade.checked) countCirc++;
-            if (cbAntecedentes.checked) countCirc++;
-            if (cbConduta.checked) countCirc++;
-            if (cbPersonalidade.checked) countCirc++;
-            if (cbMotivos.checked) countCirc++;
-            if (cbCircunstancias.checked) countCirc++;
-            if (cbConsequencias.checked) countCirc++;
-            if (cbVitima.checked) countCirc++;
+            // FASE 1
+            const countCirc = contarCheckboxes('cb');
+            const fatorCirc = parseFloat(document.getElementById('fatorCirc').value) || 0;
 
             let penaBase = min + (countCirc * fatorCirc);
             if (penaBase > max) penaBase = max;
             if (penaBase < min) penaBase = min;
 
-            const totalAtenuantes = contarAtenuantes();
-            const totalAgravantes = contarAgravantes();
-            
-            const fatorAten = parseFloat(fatorAtenuanteInput.value) || 0;
-            const fatorAgra = parseFloat(fatorAgravanteInput.value) || 0;
+            // FASE 2
+            const totalAgravantes = contarCheckboxes('agravante');
+            const totalAtenuantes = contarCheckboxes('atenuante');
+            const fatorAgra = parseFloat(document.getElementById('fatorAgravante').value) || 0;
+            const fatorAten = parseFloat(document.getElementById('fatorAtenuante').value) || 0;
 
             const pesoAgravantes = totalAgravantes * fatorAgra;
             const pesoAtenuantes = totalAtenuantes * fatorAten;
             const saldoFatores = pesoAgravantes - pesoAtenuantes;
 
-            let compensacaoTexto = '';
             if (totalAtenuantes > 0 || totalAgravantes > 0) {
-                compensacaoTexto = `<strong>Detalhamento Fase 2:</strong> Aplicado fator de +${(pesoAgravantes).toFixed(3)} pelas agravantes e -${(pesoAtenuantes).toFixed(3)} pelas atenuantes. `;
-                if (saldoFatores > 0) {
-                    compensacaoTexto += `Saldo de aumento na pena.`;
-                } else if (saldoFatores < 0) {
-                    compensacaoTexto += `Saldo de redução na pena.`;
-                } else {
-                    compensacaoTexto += `Compensação total equilibrada.`;
-                }
+                let txt = `<strong>Detalhamento Fase 2:</strong> Fator +${(pesoAgravantes).toFixed(3)} (agravantes) e -${(pesoAtenuantes).toFixed(3)} (atenuantes). `;
+                txt += saldoFatores > 0 ? `Saldo de aumento.` : saldoFatores < 0 ? `Saldo de redução.` : `Compensação equilibrada.`;
+                detalheCompensacao.innerHTML = txt;
             } else {
-                compensacaoTexto = 'Nenhum agravante ou atenuante selecionado.';
+                detalheCompensacao.innerHTML = 'Nenhum agravante ou atenuante selecionado na Fase 2.';
             }
-
-            detalheCompensacao.innerHTML = compensacaoTexto;
 
             let penaFase2 = penaBase + (penaBase * saldoFatores);
             let aplicouSumula = false;
@@ -679,72 +654,67 @@
                 if (totalAtenuantes > 0) aplicouSumula = true;
             }
 
+            // FASE 3
             let penaFase3 = penaFase2;
+            let logFase3 = [];
 
-            if (causaTentativa.checked) {
-                const fatorTent = parseFloat(tentativaFator.value) || 0;
-                if (fatorTent > 0) penaFase3 = penaFase3 - (penaFase3 * fatorTent);
-            }
+            // Aplicando causas de aumento sucessivamente (Cascata)
+            causasAumento.forEach(item => {
+                const cb = document.getElementById(item.id);
+                const sel = document.getElementById(item.sel);
+                if (cb && cb.checked) {
+                    const fator = parseFloat(sel.value);
+                    penaFase3 += penaFase3 * fator;
+                    logFase3.push(`${item.label} (+${sel.options[sel.selectedIndex].text})`);
+                }
+            });
 
-            if (causaContinuado.checked) {
-                const fatorCont = parseFloat(continuadoFator.value) || 0;
-                if (fatorCont > 0) penaFase3 = penaFase3 + (penaFase3 * fatorCont);
-            }
+            // Aplicando causas de diminuição sucessivamente (Cascata)
+            causasDiminuicao.forEach(item => {
+                const cb = document.getElementById(item.id);
+                const sel = document.getElementById(item.sel);
+                if (cb && cb.checked) {
+                    const fator = parseFloat(sel.value);
+                    penaFase3 -= penaFase3 * fator;
+                    logFase3.push(`${item.label} (-${sel.options[sel.selectedIndex].text})`);
+                }
+            });
 
+            // Renderização Final
             const round = (v) => Math.round(v * 100) / 100;
             const penaBaseRound = round(penaBase);
             const penaFase2Round = round(penaFase2);
             const penaFinalRound = round(penaFase3);
 
-            const penaDetalhada = formatarPenaDetalhada(penaFinalRound);
-            penaFinalDisplay.textContent = `${penaDetalhada}`;
-            penaFracionadaDisplay.textContent = `PENA DEFINITIVA (${penaFinalRound} ANOS)`;
+            document.getElementById('penaFinalDisplay').textContent = formatarPenaDetalhada(penaFinalRound);
+            document.getElementById('penaFracionadaDisplay').textContent = `PENA DEFINITIVA (${penaFinalRound} ANOS)`;
 
-            const dataFase1 = formatarDataResumida(penaBaseRound);
-            const dataFase2 = formatarDataResumida(penaFase2Round);
-            const dataFase3 = formatarDataResumida(penaFinalRound);
-
-            fase1Display.innerHTML = `<strong>Fase 1:</strong> ${penaBaseRound} ${dataFase1} (${countCirc} circ. desf.)`;
+            document.getElementById('fase1Display').innerHTML = `<strong>Fase 1:</strong> ${penaBaseRound} ${formatarDataResumida(penaBaseRound)} (${countCirc} circ. desf.)`;
             
             let sumulaText = aplicouSumula ? ' [⚠️ Súmula 231]' : '';
-            fase2Display.innerHTML = `<strong>Fase 2:</strong> ${penaFase2Round} ${dataFase2}${sumulaText}`;
+            document.getElementById('fase2Display').innerHTML = `<strong>Fase 2:</strong> ${penaFase2Round} ${formatarDataResumida(penaFase2Round)}${sumulaText}`;
 
-            let fase3Extra = [];
-            if (causaTentativa.checked) fase3Extra.push(`Tentativa (-${tentativaFator.value})`);
-            if (causaContinuado.checked) fase3Extra.push(`Continuado (+${continuadoFator.value})`);
-            let extra = fase3Extra.length ? ` (${fase3Extra.join(' | ')})` : '';
-            fase3Display.innerHTML = `<strong>Fase 3:</strong> ${penaFinalRound} ${dataFase3}${extra}`;
+            let extra = logFase3.length ? ` (${logFase3.join(' | ')})` : ' (Nenhum fator aplicado)';
+            document.getElementById('fase3Display').innerHTML = `<strong>Fase 3:</strong> ${penaFinalRound} ${formatarDataResumida(penaFinalRound)}${extra}`;
 
             if (aplicouSumula) {
                 avisoSumula.classList.add('visivel');
-                avisoSumula.innerHTML = '<strong>⚠️ Aplicação Prática:</strong> A pena foi limitada ao mínimo legal (' + min.toFixed(2) + ' anos) respeitando a Súmula 231 do STJ.';
+                avisoSumula.innerHTML = `<strong>⚠️ Aplicação Prática:</strong> A pena foi limitada ao mínimo legal (${min.toFixed(2)} anos) respeitando a Súmula 231 do STJ.`;
             }
         }
 
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            calcular();
-        });
-        
-        btnVoltar.addEventListener('click', () => window.location.href = 'index.html');
+        btn.addEventListener('click', (e) => { e.preventDefault(); calcular(); });
         
         btnNovoCalculo.addEventListener('click', () => {
             document.getElementById('calcForm').reset();
-            
-            minPenaInput.value = '1';
-            maxPenaInput.value = '4';
-            fatorCircInput.value = '0.125';
-            fatorAtenuanteInput.value = '0.166';
-            fatorAgravanteInput.value = '0.166';
-            
-            penaFinalDisplay.textContent = '—';
-            penaFracionadaDisplay.textContent = 'Pena Definitiva';
-            fase1Display.innerHTML = '<strong>Fase 1:</strong> —';
-            fase2Display.innerHTML = '<strong>Fase 2:</strong> —';
-            fase3Display.innerHTML = '<strong>Fase 3:</strong> —';
-            detalheCompensacao.innerHTML = '';
-            avisoSumula.classList.remove('visivel');
-            erroMsg.style.display = 'none';
+            document.getElementById('penaFinalDisplay').textContent = '—';
+            document.getElementById('penaFracionadaDisplay').textContent = 'Pena Definitiva';
+            document.getElementById('fase1Display').innerHTML = '<strong>Fase 1:</strong> —';
+            document.getElementById('fase2Display').innerHTML = '<strong>Fase 2:</strong> —';
+            document.getElementById('fase3Display').innerHTML = '<strong>Fase 3:</strong> —';
+            document.getElementById('detalheCompensacao').innerHTML = '';
+            document.getElementById('avisoSumula').classList.remove('visivel');
+            document.getElementById('erroMsg').style.display = 'none';
         });
 
     })();
